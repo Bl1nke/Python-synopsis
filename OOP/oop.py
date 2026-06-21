@@ -209,4 +209,134 @@ w.earn(50)       # +50
 w.spend(30)      # -30
 print(w)         # 💰 Кошелёк: 120 золота
 w.spend(200)
-w.__gold = 99999
+
+
+class Vehicle:
+    def __init__(self, brand, speed):
+        self.brand = brand
+        self.speed = speed
+
+    def move(self):
+        print(f"{self.brand} едет со скоростью {self.speed}")
+
+
+class Car(Vehicle):
+    def __init__(self, brand, speed, doors):
+        super().__init__(brand, speed)
+        self.doors = doors
+
+
+class Airplane(Vehicle):
+    def __init__(self, brand, speed, altitude):
+        super().__init__(brand, speed)
+        self.altitude = altitude
+
+    def move(self):
+        print(f"{self.brand} летит со скоростью {self.speed} на высоте {self.altitude} м")
+
+class Bicycle(Vehicle):
+    # def __init__(self, brand, speed):
+    #     super().__init__(brand, speed)
+    
+    # def move(self):
+    #     print(f"{self.brand} едет со скоростью {self.speed}")
+    pass
+    # Конструктор и move() автоматически наследуются поэтому их можно не писать, тем более что функционал одинаковый
+
+car = Car("BMW", 120, 4)
+plane = Airplane("Boeing", 900, 10000)
+bike = Bicycle("Giant", 25)
+
+car.move()    # BMW едет со скоростью 120 км/ч
+plane.move()  # Boeing летит на высоте 10000 м
+bike.move()   # Giant едет со скоростью 25 км/ч
+
+
+
+class CreditCard:
+    def pay(self, amount):
+        return f"💳 Оплата картой на {amount}₽. Последний номер: 4242"
+
+class PayPal:
+    def pay(self, amount):
+        return f"📧 Оплата через PayPal на {amount}₽. Email: user@mail.com"
+
+class Crypto:
+    def pay(self, amount):
+        return f"₿ Оплата в Bitcoin на {amount}₽."
+
+
+def checkout(payment_method, amount):
+    print(payment_method.pay(amount))
+
+
+payment_methods = [CreditCard(), PayPal(), Crypto()]
+
+for payment_method in payment_methods:
+    checkout(payment_method, 500)
+
+
+checkout(CreditCard(), 1500)   # 💳 ...
+checkout(PayPal(), 2000)       # 📧 ...
+checkout(Crypto(), 5000)       # ₿ ...
+
+
+
+class CPU:
+    def __init__(self, cores, ghz, price):
+        self.cores = cores
+        self.ghz = ghz
+        self.price = price
+
+    def info(self):
+        print(f"Процессор обладает {self.cores} ядрами, имеет {self.ghz} частоту и стоит {self.price} $")
+
+class RAM:
+    def __init__(self, gb, price):
+        self.gb = gb
+        self.price = price
+
+    
+    def info(self):
+        print(f"Оперативная память в размере {self.gb} гб стоит {self.price} $")
+
+
+class SSD:
+    def __init__(self, tb, price):
+        self.tb = tb
+        self.price = price
+
+    def info(self):
+        print(f"Память пк в размере {self.tb} тб и стоит {self.price}")
+
+
+
+
+class Computer:
+    def __init__(self, cpu: CPU, ram: RAM, ssd:SSD):
+        self.cpu = cpu
+        self.ram = ram
+        self.ssd = ssd
+    
+    def show_spec(self):
+        print(f"Ваш ПК имеет процессор: {self.cpu.cores} ядер, {self.cpu.ghz} ГГц")
+        print(f"Ваша оперативная память: {self.ram.gb} Гб")
+        print(f"Ваш SSD: {self.ssd.tb} Тб")
+
+    @property
+    def total_price(self) -> float:
+        return self.cpu.price + self.ram.price + self.ssd.price
+
+
+cpu = CPU(cores=8, ghz=3.6, price=20000)
+ram = RAM(gb=16, price=8000)
+ssd = SSD(tb=1, price=10000)
+
+cpu.info()
+ram.info()
+ssd.info()
+
+
+pc = Computer(cpu, ram, ssd)
+pc.show_spec()
+print(f"Общая стоимость ПК: {pc.total_price} $")

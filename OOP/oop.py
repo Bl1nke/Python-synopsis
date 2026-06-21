@@ -323,6 +323,7 @@ class Computer:
         print(f"Ваша оперативная память: {self.ram.gb} Гб")
         print(f"Ваш SSD: {self.ssd.tb} Тб")
 
+    # property позволяет нам использовать pc.total_price как переменную
     @property
     def total_price(self) -> float:
         return self.cpu.price + self.ram.price + self.ssd.price
@@ -340,3 +341,91 @@ ssd.info()
 pc = Computer(cpu, ram, ssd)
 pc.show_spec()
 print(f"Общая стоимость ПК: {pc.total_price} $")
+
+
+
+# from abc import ABC, abstractmethod уже есть этот импорт
+
+class Hero(ABC):
+    def __init__(self, name, inventory_list: list):
+        self.name = name
+        self.inventory_list = inventory_list
+
+    @abstractmethod
+    def attack(self):
+        pass
+
+    @abstractmethod
+    def take_damage(self, amount):
+        pass
+
+class Inventory:
+    def __init__(self, all_items:list):
+        self.all_items = all_items
+
+
+    def add_items(self, item:str):
+        self.all_items.append(item)
+        print(f"Добавлен новый предмет в инветарь! {item}")
+    
+    def show_items(self):
+        print(f"Полный инвентарь: {', '.join(self.all_items)}")
+
+
+class Warrior(Hero):
+    def __init__(self, name, hp, level, inventory_list: list):
+        super().__init__(name, inventory_list)
+        self.__hp = hp
+        self.__level = level
+        self.inventory_list = Inventory(inventory_list)
+        self.attack_level = self.__hp * 0.2
+    
+    def attack(self):
+        print(f"Войн бьет мечом! Урон {self.attack_level}")
+
+    def take_damage(self, amount):
+        self.__hp -= amount
+        print(f"{self.name} получил урон в размере {amount}.")
+        print(f"Количество здоровья {self.__hp}")
+
+
+class Mage(Hero):
+    def __init__(self, name, hp, level, inventory_list : list):
+        super().__init__(name, inventory_list)
+        self.__hp = hp
+        self.__level = level
+        self.inventory_list = Inventory(inventory_list)
+        self.attack_level = self.__hp * 0.25
+    
+    def attack(self):
+        print(f"Маг отправляет заклятие! Урон {self.attack_level}")
+
+    def take_damage(self, amount):
+        self.__hp -= amount
+        print(f"{self.name} получил урон в размере {amount}.")
+        print(f"Количество здоровья {self.__hp}")
+
+
+class Archer(Hero):
+    def __init__(self, name, hp, level, inventory_list: list):
+        super().__init__(name, inventory_list)
+        self.__hp = hp
+        self.__level = level
+        self.inventory_list = Inventory(inventory_list)
+        self.attack_level = self.__hp * 0.15
+    
+    def attack(self):
+        print(f"Лучник отправляет стрелу! Урон {self.attack_level}")
+
+    def take_damage(self, amount):
+        self.__hp -= amount
+        print(f"{self.name} получил урон в размере {amount}.")
+        print(f"Количество здоровья {self.__hp}")
+
+
+# Реализовать функцию боя для героев пока один из них не победит
+
+
+archer_of_impire = Archer(name = "Grigor",hp=70, level=2, inventory_list=["apple"])
+archer_of_impire.inventory_list.add_items("letter")
+archer_of_impire.inventory_list.show_items()

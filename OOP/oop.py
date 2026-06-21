@@ -343,22 +343,6 @@ pc.show_spec()
 print(f"Общая стоимость ПК: {pc.total_price} $")
 
 
-
-# from abc import ABC, abstractmethod уже есть этот импорт
-
-class Hero(ABC):
-    def __init__(self, name, inventory_list: list):
-        self.name = name
-        self.inventory_list = inventory_list
-
-    @abstractmethod
-    def attack(self):
-        pass
-
-    @abstractmethod
-    def take_damage(self, amount):
-        pass
-
 class Inventory:
     def __init__(self, all_items:list):
         self.all_items = all_items
@@ -371,61 +355,118 @@ class Inventory:
     def show_items(self):
         print(f"Полный инвентарь: {', '.join(self.all_items)}")
 
+# from abc import ABC, abstractmethod уже есть этот импорт
+# нужно было использовать _ а не __, так как обращались к несуществующему объекту _Hero__hp. 
+# __ привязывает атрибут к конкретному классу, когда мы пишем self.__hp в Warrior, то python думает, что это 
+# только для Warrior и что другие трогать нельзя. При этом когда take_damage(родительский метод) пытается обратиться
+# к self.__hp, то он ишет в Hero, там его нет, соответсвенно он его не находит.
+# 
+# _ не привязывает атрибут ни к какому классу. (Это просто установка для того, чтобы не вмешиваться)
+
+
+
+class Hero(ABC):
+    def __init__(self, name, inventory_list: Inventory):
+        self.name = name
+        self.inventory_list = inventory_list
+
+    @abstractmethod
+    def attack(self):
+        pass
+
+
+    def take_damage(self, amount):
+        self._hp -= amount
+        if self._hp < 0:
+            self._hp = 0
+        print(f"{self.name} получил {amount} урона. Осталось HP: {self._hp}")
+
+    # Нужно для того чтобы можно было узнать текущее здоровье снаружи
+    @property
+    def hp(self):   
+        return self._hp
+
+
 
 class Warrior(Hero):
     def __init__(self, name, hp, level, inventory_list: list):
         super().__init__(name, inventory_list)
-        self.__hp = hp
-        self.__level = level
+        self._hp = hp
+        self._level = level
         self.inventory_list = Inventory(inventory_list)
-        self.attack_level = self.__hp * 0.2
     
     def attack(self):
-        print(f"Войн бьет мечом! Урон {self.attack_level}")
+        damage = self._hp * self._level * 0.15
+        print(f"{self.name} бьет мечом! с уроном {damage}")
+        return damage
 
-    def take_damage(self, amount):
-        self.__hp -= amount
-        print(f"{self.name} получил урон в размере {amount}.")
-        print(f"Количество здоровья {self.__hp}")
 
 
 class Mage(Hero):
     def __init__(self, name, hp, level, inventory_list : list):
         super().__init__(name, inventory_list)
-        self.__hp = hp
-        self.__level = level
+        self._hp = hp
+        self._level = level
         self.inventory_list = Inventory(inventory_list)
-        self.attack_level = self.__hp * 0.25
     
     def attack(self):
-        print(f"Маг отправляет заклятие! Урон {self.attack_level}")
-
-    def take_damage(self, amount):
-        self.__hp -= amount
-        print(f"{self.name} получил урон в размере {amount}.")
-        print(f"Количество здоровья {self.__hp}")
+        damage = self._hp * self._level * 0.13
+        print(f"{self.name} заклинает! с уроном {damage}")
+        return damage
 
 
 class Archer(Hero):
     def __init__(self, name, hp, level, inventory_list: list):
         super().__init__(name, inventory_list)
-        self.__hp = hp
-        self.__level = level
+        self._hp = hp
+        self._level = level
         self.inventory_list = Inventory(inventory_list)
-        self.attack_level = self.__hp * 0.15
     
     def attack(self):
-        print(f"Лучник отправляет стрелу! Урон {self.attack_level}")
-
-    def take_damage(self, amount):
-        self.__hp -= amount
-        print(f"{self.name} получил урон в размере {amount}.")
-        print(f"Количество здоровья {self.__hp}")
+        damage = self._hp * self._level * 0.25
+        print(f"{self.name} бьет мечом! с уроном {damage}")
+        return damage
 
 
-# Реализовать функцию боя для героев пока один из них не победит
+
+import time
+
+def battle(hero1: Hero, hero2: Hero):
+    print(f"Битва между {hero1.name} и {hero2.name}")
+
+    attackers = [hero1, hero2]
+
+    while hero1.hp > 0 and hero2.hp > 0:
+        for attacker in attackers:
+            defender = hero2 if attacker == hero1 else hero1
+            if defender.hp <=0:
+                break
 
 
-archer_of_impire = Archer(name = "Grigor",hp=70, level=2, inventory_list=["apple"])
-archer_of_impire.inventory_list.add_items("letter")
-archer_of_impire.inventory_list.show_items()
+        damage = attacker.attack()
+
+        defender.take_damage(damage)
+
+        # Пауза для эффекта
+        time.sleep(1) 
+
+    if hero1.hp > 0:
+        print(f" {hero1.name} победил! Осталось {hero1.hp}")
+    else:
+        print(f"{hero2.name} победил! Осталось {hero2.hp}")
+
+
+inv1 = Inventory(["apple", "sword"])
+inv2 = Inventory(["potion"])
+
+warrior = Warrior("Conan", 100, 3, inv1)
+mage = Mage("Gandalf", 70, 5, inv2)
+
+battle(warrior, mage)
+
+
+
+
+
+
+

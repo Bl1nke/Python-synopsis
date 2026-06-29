@@ -96,7 +96,7 @@ try:
 except WrongZnak:
     print("Неверная операция")
 else:
-    try:
+    try:    
         # НЕ рекомендуется использовать eval()
         result = eval(f"{a} {znak} {b}")
     except ZeroDivisionError:

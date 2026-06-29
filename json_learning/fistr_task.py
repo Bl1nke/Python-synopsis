@@ -23,3 +23,5 @@ print(json_data1_dict)
 reverse_to_dict1 = json.loads(json_data1_dict)
 print(type(reverse_to_dict1))
 print(reverse_to_dict1)
+
+# Из кортежа получается лист

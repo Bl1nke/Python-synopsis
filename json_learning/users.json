@@ -1,0 +1,32 @@
+[
+  {
+    "id": 8274,
+    "login": "Alex_Dev",
+    "is_active": true
+  },
+  {
+    "id": 1409,
+    "login": "Maria_K",
+    "is_active": false
+  },
+  {
+    "id": 6531,
+    "login": "Dmitry99",
+    "is_active": true
+  },
+  {
+    "id": 3105,
+    "login": "Elena_Pro",
+    "is_active": true
+  },
+  {
+    "id": 9412,
+    "login": "Pavel_X",
+    "is_active": false
+  },
+  {
+    "id": 4324,
+    "login": "Билл",
+    "is_active": true
+  }
+]

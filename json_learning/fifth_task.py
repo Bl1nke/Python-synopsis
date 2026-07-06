@@ -1,5 +1,7 @@
 import json
 
+
+num = 1
 while True:
     print("Показать задачи|Добавить задачу|Выполнить|Выход")
     user_input = input("Что вы хотите сделать? ")
@@ -18,8 +20,9 @@ while True:
             print("Список задач отсутсвует или неисправлен")
     elif user_input == "Добавить задачу":
         task_text = input("Введите название задачи: ")
-        num = int(input("Введите номер задачи: "))
-        task = {"id": num, "text": task_text, "status": False}
+        task = {"id": num, 
+                "text": task_text, 
+                "status": False}
         try:
             with open("json_learning/tasks.json", "r", encoding='utf-8') as file:
                 data = json.load(file)
@@ -29,6 +32,7 @@ while True:
         with open("json_learning/tasks.json", "w", encoding='utf-8') as file:
             json.dump(data, file, indent=2, ensure_ascii=False)
             print("Задача добавлена")
+            num += 1
     elif user_input == "Выполнить":
         class WrongID(Exception):
             pass
@@ -39,10 +43,11 @@ while True:
                 for index, item in enumerate(data):
                     task_id = item.get("id")
                     if task_num == task_id:
-                            with open("json_learning/tasks.json", "w", encoding='utf-8') as file:
-                                task_status = True
-                                data = json.dump(data, file)
-                                print(f"---Задача номер {task_id}: {task_text}. Статус {True}")
+                        item["status"] = True
+                        task_status = item["status"]    
+                        with open("json_learning/tasks.json", "w", encoding='utf-8') as file:
+                                data = json.dump(data, file, ensure_ascii=False, indent=2)
+                                print(f"---Задача номер {task_id}: {task_text}. Статус {task_status}")
         except(FileNotFoundError, json.JSONDecodeError):
             print("Список задач пуст или неисправен")
         except WrongID:
@@ -52,14 +57,9 @@ while True:
         break
     else:
         print("Такой команды пока нет, выберете из существующих")
-# Можно ли вместо создания своей ошибки просто вывести принт, что такой ошибки не существует
+# Можно ли вместо создания своей ошибки просто вывести принт, что такой команды не существует
 
-
-
-
-
-  
-
+# Отправить код на ревью ИИ, чтобы он сказал, что не так и где можно улучшить 
 
 
 
